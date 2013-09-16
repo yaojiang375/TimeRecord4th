@@ -12,6 +12,8 @@ int main()
 {
 
     QFile       csvRead(globe.SmsPos);
+    QFile       xmlWrite("c:/try.xml");
+    xmlWrite.open(QIODevice::WriteOnly)
     csvRead.open(QIODevice::ReadOnly);
     QTextStream textRead(&csvRead);
     QString     Reader;
@@ -21,9 +23,14 @@ int main()
     QString     LastRecord,Nextrecord,LastRemember,NextRemember;
     QString     ReadItLatter;//待办记事
     int         DayDate,TimeDate;
-    int         LastPos,NextPos;//定义完毕，正式开始
+    int         LastPos,NextPos;//
 
-    /*****************************************/
+    /*******************xml试验***************************/
+    QDomDocument    doc;
+    
+    
+    
+    /*********************定义完毕，正式开始********************/
     Reader      = textRead.readAll();
     //qDebug()<<Reader;//Debug;
     LastPos     = Reader.indexOf("sms,submit,");
@@ -44,7 +51,7 @@ int main()
         LastPos = Reader.indexOf("sms,submit,",NextPos);
 
     }
-
+    
 
     return 0;
 }
