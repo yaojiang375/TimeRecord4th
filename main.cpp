@@ -2,8 +2,9 @@
 #include <QFile>
 #include <QTextStream>
 #include <QtXml/QtXml>
+#include <QTXml/QDomDocument>
 #include <QString>
-
+#include <globe.h>
 
 
 globeset globe;//待修改成标准模式
@@ -12,6 +13,8 @@ int main()
 {
 
     QFile       csvRead(globe.SmsPos);
+    QFile       xmlWrite("c:/try.xml");
+    xmlWrite.open(QIODevice::WriteOnly);
     csvRead.open(QIODevice::ReadOnly);
     QTextStream textRead(&csvRead);
     QString     Reader;
@@ -21,9 +24,25 @@ int main()
     QString     LastRecord,Nextrecord,LastRemember,NextRemember;
     QString     ReadItLatter;//待办记事
     int         DayDate,TimeDate;
-    int         LastPos,NextPos;//定义完毕，正式开始
+    int         LastPos,NextPos;//
 
-    /*****************************************/
+    /*******************xml试验***************************/
+    QDomDocument    doc;
+    QDomProcessingInstruction instruction;
+    instruction = doc.createProcessingInstruction("xml","version=\"1.0\" encoding = \"UTF-8\"");
+    doc.appendChild(instruction);
+    QDomElement root        = doc.createElement("Record");
+    doc.appendChild(root);
+    QDomElement id          = doc.createElement("id");
+    QDomElement Date        = doc.createElement("Date");
+    QDomElement year        = doc.createElement("Year");
+    id.setNodeValue("1");
+    Date.appendChild(year);
+    root.appendChild(id);
+    root.appendChild(Date);
+    QTextStream  out(&xmlWrite);
+    doc.save(out,4);
+    /*********************定义完毕，正式开始********************/
     Reader      = textRead.readAll();
     //qDebug()<<Reader;//Debug;
     LastPos     = Reader.indexOf("sms,submit,");

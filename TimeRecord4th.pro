@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 QT       += core
-
+QT       += xml
 QT       -= gui
 
 TARGET = TimeRecord4th
