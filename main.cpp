@@ -2,17 +2,39 @@
 #include <QFile>
 #include <QTextStream>
 #include <QtXml/QtXml>
-#include <QTXml/QDomDocument>
 #include <QString>
 #include <globe.h>
 
 
 globeset globe;//待修改成标准模式
 
+void ContentDeal(QString &Content,QString &LastRecord,QString &NextRecord,QString &LastRemember,QString &NextRemember,globeset globe)
+{
+    QString     Buffer;
+    Buffer  =Content.mid(0,Content.indexOf(globe.MidThing));
+    if(Buffer.indexOf(globe.LeftRem)!=-1&&Buffer.indexOf(globe.ReghtRem)!=-1)//若左右标记同时存在，则认为中间内容为备注内容。
+    {
+        LastRemember = Buffer.mid(Buffer.indexOf(globe.LeftRem)+1,Buffer.indexOf(globe.ReghtRem)-Buffer.indexOf(globe.LeftRem)-1);
+        Buffer.remove(Buffer.indexOf(globe.LeftRem),Buffer.indexOf(globe.ReghtRem)-Buffer.indexOf(globe.LeftRem)+1);
+    }
+    LastRecord = Buffer;
+    Buffer  =Content.mid(Content.indexOf(globe.MidThing)+1,-1);
+    if(Buffer.indexOf(globe.LeftRem)!=-1&&Buffer.indexOf(globe.ReghtRem)!=-1)//若左右标记同时存在，则认为中间内容为备注内容。
+    {
+        NextRemember = Buffer.mid(Buffer.indexOf(globe.LeftRem)+1,Buffer.indexOf(globe.ReghtRem)-Buffer.indexOf(globe.LeftRem)-1);
+        Buffer.remove(Buffer.indexOf(globe.LeftRem),Buffer.indexOf(globe.ReghtRem)-Buffer.indexOf(globe.LeftRem)+1);
+    }
+    NextRecord = Buffer;
+    return;
+}
+
+
 int main()
 {
+    globe.read();
 
     QFile       csvRead(globe.SmsPos);
+    qDebug()<<"csv:"<<csvRead.isOpen();//qdebug
     QFile       xmlWrite("c:/try.xml");
     xmlWrite.open(QIODevice::WriteOnly);
     csvRead.open(QIODevice::ReadOnly);
@@ -21,27 +43,42 @@ int main()
     QString     Year,Month,Day,Hour,Minute;
     QString     CommaHour,CommaMinute;
     QString     Buffer;
-    QString     LastRecord,Nextrecord,LastRemember,NextRemember;
+    QString          LastRecord,     NextRecord,     LastRemember,     NextRemember,
+                CommaLastRecord,CommaNextRecord,CommaLastRemember,CommaNextRemember;
     QString     ReadItLatter;//待办记事
     int         DayDate,TimeDate;
     int         LastPos,NextPos;//
 
     /*******************xml试验***************************/
+    int         RecordId=0;//xml文件中的事件记录序号
     QDomDocument    doc;
     QDomProcessingInstruction instruction;
     instruction = doc.createProcessingInstruction("xml","version=\"1.0\" encoding = \"UTF-8\"");
     doc.appendChild(instruction);
-    QDomElement root        = doc.createElement("Record");
-    doc.appendChild(root);
+    QDomElement root        = doc.createElement("root");
+
+
+    QDomElement Record      = doc.createElement("Record");
     QDomElement id          = doc.createElement("id");
+    QDomElement WrongFlag   = doc.createElement("WrongFlag");
     QDomElement Date        = doc.createElement("Date");
     QDomElement year        = doc.createElement("Year");
-    id.setNodeValue("1");
-    Date.appendChild(year);
-    root.appendChild(id);
-    root.appendChild(Date);
+    QDomElement month       = doc.createElement("Month");
+    QDomElement day         = doc.createElement("Day");
+    QDomElement Time        = doc.createElement("Time");
+    QDomElement hour        = doc.createElement("Hour");
+    QDomElement minute      = doc.createElement("Minute");
+    QDomElement Body        = doc.createElement("Body");
+    QDomElement LastThing   = doc.createElement("LastThing");
+    QDomElement LastRem     = doc.createElement("LastThingRemember");
+    QDomElement NextThing   = doc.createElement("NextThing");
+    QDomElement NextRem     = doc.createElement("NextThingRemember");
+    QDomText text;
+
+
+
     QTextStream  out(&xmlWrite);
-    doc.save(out,4);
+
     /*********************定义完毕，正式开始********************/
     Reader      = textRead.readAll();
     //qDebug()<<Reader;//Debug;
@@ -59,10 +96,95 @@ int main()
         Buffer  = Reader.mid(LastPos+19+4,NextPos-LastPos-23);
         qDebug()<<"Year="+Year;qDebug()<<"Month="+Month;qDebug()<<"Day="+Day;qDebug()<<"Hour="+Hour;qDebug()<<"Minute="+Minute;//Debug
         qDebug()<<"Buffer = "+Buffer;//Debug
-        /*buffer处理*/
+        /******************************************************/
+
+        if(Buffer[0]==globe.RecFlag[0])//globe待改成指针模式
+        {
+            if(Buffer[1]==globe.AddFlag[0])
+            {
+
+            }
+            else
+            {
+                Buffer.remove(0,1);
+                ContentDeal(Buffer,LastRecord,NextRecord,LastRemember,NextRemember,globe);
+
+                Record      = doc.createElement("Record");
+                id          = doc.createElement("id");
+                WrongFlag   = doc.createElement("WrongFlag");
+                Date        = doc.createElement("Date");
+                year        = doc.createElement("Year");
+                month       = doc.createElement("Month");
+                day         = doc.createElement("Day");
+                Time        = doc.createElement("Time");
+                hour        = doc.createElement("Hour");
+                minute      = doc.createElement("Minute");
+                Body        = doc.createElement("Body");
+                LastThing   = doc.createElement("LastThing");
+                LastRem     = doc.createElement("LastThingRemember");
+                NextThing   = doc.createElement("NextThing");
+                NextRem     = doc.createElement("NextThingRemember");
+
+                RecordId++;
+                QString _Toint;
+                _Toint.setNum(RecordId);
+                text    =doc.createTextNode(_Toint);
+                id.appendChild(text);
+                text    =doc.createTextNode("FALSE");
+                WrongFlag.appendChild(text);
+                text    =doc.createTextNode(_Toint.setNum(Year.toInt()*5741+Month.toInt()*5743+Day.toInt()*5749));//5741,5743,5749都是质数，Qt中的int范围  应该  能支持这样的数
+                Date.appendChild(text);
+                text    =doc.createTextNode(Year);
+                year.appendChild(text);
+                text    =doc.createTextNode(Month);
+                month.appendChild(text);
+                text    =doc.createTextNode(Day);
+                day.appendChild(text);
+                text    =doc.createTextNode(_Toint.setNum(Hour.toInt()*60+Minute.toInt()));
+                Time.appendChild(text);
+                text    =doc.createTextNode(Hour);
+                hour.appendChild(text);
+                text    =doc.createTextNode(Minute);
+                minute.appendChild(text);
+                text    =doc.createTextNode(LastRecord);
+                LastThing.appendChild(text);
+                text    =doc.createTextNode(LastRemember);
+                LastRem.appendChild(text);
+                text    =doc.createTextNode(NextRecord);
+                NextThing.appendChild(text);
+                text    =doc.createTextNode(NextRemember);
+                NextRem.appendChild(text);
+
+
+
+                Date.appendChild(year);
+                Date.appendChild(month);
+                Date.appendChild(day);
+                Time.appendChild(hour);
+                Time.appendChild(minute);
+                Body.appendChild(LastThing);
+                Body.appendChild(LastRem);
+                Body.appendChild(NextThing);
+                Body.appendChild(NextRem);
+
+                Record.appendChild(id);
+                Record.appendChild(WrongFlag);
+                Record.appendChild(Date);
+                Record.appendChild(Time);
+                Record.appendChild(Body);
+
+                root.appendChild(Record);
+            }
+        }
+
+
+        /******************************************************/
+
         LastPos = Reader.indexOf("sms,submit,",NextPos);
 
     }
+    doc.appendChild(root);
+    doc.save(out,4);
 
 
     return 0;
