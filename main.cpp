@@ -4,7 +4,7 @@
 #include <QtXml/QtXml>
 #include <QString>
 #include <globe.h>
-
+#include <QDateTime>
 
 globeset globe;//待修改成标准模式
 
@@ -39,11 +39,14 @@ int main()
     xmlWrite.open(QIODevice::WriteOnly);
     csvRead.open(QIODevice::ReadOnly);
     QTextStream textRead(&csvRead);
+
+    QDate       _DateTime;
+    QTime       _Time;
+
     QString     Reader;
-    QString     Year,Month,Day,Hour,Minute;
     QString     CommaHour,CommaMinute;
     QString     Buffer;
-    QString          LastRecord,     NextRecord,     LastRemember,     NextRemember,
+    QString          LastRecord,     NextRecord,     LastRemember,     NextRemember,CommaContent,
                 CommaLastRecord,CommaNextRecord,CommaLastRemember,CommaNextRemember;
     QString     ReadItLatter;//待办记事
     int         DayDate,TimeDate;
@@ -56,7 +59,6 @@ int main()
     instruction = doc.createProcessingInstruction("xml","version=\"1.0\" encoding = \"UTF-8\"");
     doc.appendChild(instruction);
     QDomElement root        = doc.createElement("root");
-
 
     QDomElement Record      = doc.createElement("Record");
     QDomElement id          = doc.createElement("id");
@@ -73,7 +75,7 @@ int main()
     QDomElement LastRem     = doc.createElement("LastThingRemember");
     QDomElement NextThing   = doc.createElement("NextThing");
     QDomElement NextRem     = doc.createElement("NextThingRemember");
-    QDomText text;
+    QDomText    text;
 
 
 
@@ -87,38 +89,47 @@ int main()
     {
         LastPos = Reader.indexOf(",,",LastPos);
         LastPos = Reader.indexOf(",,",LastPos+1);
-        Year    = Reader.mid(LastPos+2,4);//"sms,submit,,	10086,,2013. 6.25  9:44,109,。？做答案"
-        Month   = Reader.mid(LastPos+7,2);
-        Day     = Reader.mid(LastPos+10,2);//"  9:44,109,。？做答案""
-        Hour    = Reader.mid(LastPos+13,2);
-        Minute  = Reader.mid(LastPos+16,2);
+        _DateTime.setYMD(Reader.mid(LastPos+2,4).toInt(),Reader.mid(LastPos+7,2).toInt(),Reader.mid(LastPos+10,2).toInt());//"sms,submit,,	10086,,2013. 6.25  9:44,109,。？做答案"
+        _Time.setHMS(Reader.mid(LastPos+13,2).toInt(),Reader.mid(LastPos+16,2).toInt(),0,0);
+
         NextPos = Reader.indexOf("sms,",LastPos+19);//一旦有人把sms写进信息体里面怎么办？
         Buffer  = Reader.mid(LastPos+19+4,NextPos-LastPos-23);
-        qDebug()<<"Year="+Year;qDebug()<<"Month="+Month;qDebug()<<"Day="+Day;qDebug()<<"Hour="+Hour;qDebug()<<"Minute="+Minute;//Debug
+        qDebug()<<"Date= "+_DateTime.toString("yyyy-MM-dd");
         qDebug()<<"Buffer = "+Buffer;//Debug
         /******************************************************/
 
         if(Buffer[0]==globe.RecFlag[0])//globe待改成指针模式
         {
-            if(Buffer[1]==globe.AddFlag[0])
+            Buffer.remove(0,1);
+            if(Buffer[0]==globe.AddFlag[0])
             {
+                Buffer.remove(0,1);
 
+                if(Buffer.indexOf(globe.AddEndFlag)!=-1)
+                {
+                    text    =doc.createTextNode("FALSE");
+                    WrongFlag.appendChild(text);
+
+                }
+                else
+                {
+                    text    =doc.createTextNode("TRUE");
+                    WrongFlag.appendChild(text);//当出现错误时只需要跳过该记录即可
+                }
             }
             else
             {
-                Buffer.remove(0,1);
+                text    =doc.createTextNode("FALSE");
+                WrongFlag.appendChild(text);
+            }
+                
                 ContentDeal(Buffer,LastRecord,NextRecord,LastRemember,NextRemember,globe);
 
                 Record      = doc.createElement("Record");
                 id          = doc.createElement("id");
                 WrongFlag   = doc.createElement("WrongFlag");
                 Date        = doc.createElement("Date");
-                year        = doc.createElement("Year");
-                month       = doc.createElement("Month");
-                day         = doc.createElement("Day");
                 Time        = doc.createElement("Time");
-                hour        = doc.createElement("Hour");
-                minute      = doc.createElement("Minute");
                 Body        = doc.createElement("Body");
                 LastThing   = doc.createElement("LastThing");
                 LastRem     = doc.createElement("LastThingRemember");
@@ -130,22 +141,10 @@ int main()
                 _Toint.setNum(RecordId);
                 text    =doc.createTextNode(_Toint);
                 id.appendChild(text);
-                text    =doc.createTextNode("FALSE");
-                WrongFlag.appendChild(text);
-                text    =doc.createTextNode(_Toint.setNum(Year.toInt()*5741+Month.toInt()*5743+Day.toInt()*5749));//5741,5743,5749都是质数，Qt中的int范围  应该  能支持这样的数
+                text    =doc.createTextNode(_DateTime.toString("yyyy-MM-dd"));
                 Date.appendChild(text);
-                text    =doc.createTextNode(Year);
-                year.appendChild(text);
-                text    =doc.createTextNode(Month);
-                month.appendChild(text);
-                text    =doc.createTextNode(Day);
-                day.appendChild(text);
-                text    =doc.createTextNode(_Toint.setNum(Hour.toInt()*60+Minute.toInt()));
+                text    =doc.createTextNode(_Time.toString("hh:mm"));
                 Time.appendChild(text);
-                text    =doc.createTextNode(Hour);
-                hour.appendChild(text);
-                text    =doc.createTextNode(Minute);
-                minute.appendChild(text);
                 text    =doc.createTextNode(LastRecord);
                 LastThing.appendChild(text);
                 text    =doc.createTextNode(LastRemember);
@@ -174,7 +173,7 @@ int main()
                 Record.appendChild(Body);
 
                 root.appendChild(Record);
-            }
+            
         }
 
 
