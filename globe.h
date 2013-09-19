@@ -13,10 +13,10 @@ public:
     QString RILFlag;
     QString RecFlag;
     QString AddFlag;
+    QString AddEndFlag;
     QString ReghtRem;
     QString LeftRem;
     QString MidThing;
-    QString AddEndFlag;
     QDate   STLDate;//标准时间，1970-01-01_00：00
     QString iniPos;
 
@@ -31,9 +31,8 @@ public:
         ReghtRem    ="]";
         LeftRem     ="[";
         MidThing    ="？";
-        STLDate.fromString("1970-01-01","yyyy-MM-dd");
-
         iniPos      ="c:/1.ini";//Qdebug
+        STLDate.fromString("1970-01-01","yyyy-MM-dd");
     }
     void read()
     {
@@ -47,8 +46,27 @@ public:
         RecFlag=key;
         iniRead>>MidThing;
         iniRead>>RILFlag;
+        iniRead>>AddFlag;
+        iniRead>>AddEndFlag;
         
         return;
+    }
+    void Show()
+    {
+        qDebug()<<"SmsPos="     <<SmsPos    <<'\n'
+               <<"ReadWrong="   <<ReadWrong <<'\n'
+                <<"RILFlag="    <<RILFlag   <<'\n'
+                <<"RecFlag="    <<RecFlag   <<'\n'
+                <<"AddFlag="    <<AddFlag   <<'\n'
+                <<"AddEndFlag=" <<AddEndFlag<<'\n'
+                <<"ReghtRem="   <<ReghtRem  <<'\n'
+                <<"LeftRem="    <<LeftRem   <<'\n'
+                <<"MidThing="   <<MidThing  <<'\n'
+                <<"iniPos="     <<iniPos    <<'\n'  ;
+             /*   <<"=" << <<'\n'
+                <<"=" << <<'\n'
+                <<"=" << <<'\n'
+                <<"=" << <<'\n'  */
     }
 };
 
