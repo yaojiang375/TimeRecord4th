@@ -36,7 +36,7 @@ int CountMidThing(QString  Content)//如果数据中有不等于一个的事件�
     int Count=0;
     while(Content.indexOf(globe.MidThing,Pos)!=-1)
     {
-        qDebug()<<Content;
+        qDebug()<<Content;//qDebug
         qDebug()<<Content.indexOf(globe.MidThing,Pos);
         Pos=Content.indexOf(globe.MidThing,Pos)+1;
         Count++;
