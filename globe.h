@@ -4,6 +4,7 @@
 #include <QFile>
 #include <QDateTime>
 
+#include <QDebug>
 
 class globeset
 {
