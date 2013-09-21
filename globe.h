@@ -20,6 +20,7 @@ public:
     QString MidThing;
     QDate   STLDate;//标准时间，1970-01-01_00：00
     QString iniPos;
+    QString NameConnecrXmlPos;
 
     globeset()
     {
@@ -34,6 +35,7 @@ public:
         MidThing    ="？";
         iniPos      ="c:/1.ini";//Qdebug
         STLDate.fromString("1970-01-01","yyyy-MM-dd");
+        NameConnecrXmlPos ="c:/NameConnecrXmlPos.ini";
     }
     void read()
     {
@@ -63,9 +65,9 @@ public:
                 <<"ReghtRem="   <<ReghtRem  <<'\n'
                 <<"LeftRem="    <<LeftRem   <<'\n'
                 <<"MidThing="   <<MidThing  <<'\n'
-                <<"iniPos="     <<iniPos    <<'\n'  ;
-             /*   <<"=" << <<'\n'
-                <<"=" << <<'\n'
+                <<"iniPos="     <<iniPos    <<'\n'
+                <<"NameConnecrXmlPos=" <<NameConnecrXmlPos <<'\n';
+              /*  <<"=" << <<'\n'
                 <<"=" << <<'\n'
                 <<"=" << <<'\n'  */
     }

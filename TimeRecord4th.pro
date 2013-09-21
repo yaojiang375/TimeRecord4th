@@ -16,8 +16,14 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp \
-    xml.cpp
+    recordautosort.cpp \
+    recordname.cpp \
+    smsreader.cpp \
+    GTDxml.cpp
 
 HEADERS += \
     globe.h \
-    xml.h
+    recordautosort.h \
+    recordname.h \
+    smsreader.h \
+    GTDxml.h
