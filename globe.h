@@ -21,6 +21,7 @@ public:
     QDate   STLDate;//标准时间，1970-01-01_00：00
     QString iniPos;
     QString NameConnecrXmlPos;
+    QString NameWithSortNumReturnRecordXmlPOS;
 
     globeset()
     {
@@ -35,7 +36,8 @@ public:
         MidThing    ="？";
         iniPos      ="c:/1.ini";//Qdebug
         STLDate.fromString("1970-01-01","yyyy-MM-dd");
-        NameConnecrXmlPos ="c:/NameConnecrXmlPos.ini";
+        NameConnecrXmlPos ="c:/NameConnecrXmlPos.xml";
+        NameWithSortNumReturnRecordXmlPOS="c:/NameWithSortNumReturnRecordXmlPOS.xml";
     }
     void read()
     {

@@ -16,6 +16,7 @@ class SmsReader
 public:
     SmsReader(globeset &globe);
     bool Read(globeset &globe);
+
 private:
 
 

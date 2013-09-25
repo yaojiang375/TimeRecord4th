@@ -6,6 +6,36 @@ void GTDxml::XmlSave(QString xmlWrite)
     QTextStream  out(&_xml);
     doc.appendChild(root);
     doc.save(out,4);
+    _xml.close();
+    return;
+}
+
+void GTDxml::ElementRead(QDomElement key,QString _Date, QString _Time, QString _LastThing, QString _LastRem, QString _NextThing, QString _NextRem, bool _WrongFlag)
+{
+
+
+    _Date   =key.firstChildElement("Date").text();
+    _Time   =key.firstChildElement("Time").text();
+    _LastThing=key.firstChildElement("LastThing").text();
+    _LastRem=key.firstChildElement("LastThingRemember").text();
+    _NextThing=key.firstChildElement("NextThing").text();
+    _NextRem=key.firstChildElement("NextThingRemember").text();
+    if(!key.firstChildElement("WrongFlag").text().compare("True"))
+    {
+       _WrongFlag=TRUE;
+    }
+    else
+    {
+       _WrongFlag=FALSE;
+    }
+    return;
+}
+
+void GTDxml::GTDxmlFileOpen(QString xmlWrite)
+{
+    QFile   _xml(xmlWrite);
+    _xml.open(QIODevice::WriteOnly);
+    doc.setContent(&_xml);
     return;
 }
 

@@ -14,8 +14,9 @@ public:
 
     void DomWrite(QString _Date,QString _Time,QString _LastThing,QString _LastRem,QString _NextThing,QString _NextRem,bool  _WrongFlag);
     void XmlSave(QString xmlWrite);
-
-    private:
+    void ElementRead(QDomElement key,QString _Date,QString _Time,QString _LastThing,QString _LastRem,QString _NextThing,QString _NextRem,bool  _WrongFlag);
+    void GTDxmlFileOpen(QString xmlWrite);
+private:
         int ID;
         QDomDocument doc        ;
         QDomProcessingInstruction instruction;

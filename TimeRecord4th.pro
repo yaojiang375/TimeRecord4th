@@ -19,11 +19,15 @@ SOURCES += main.cpp \
     recordautosort.cpp \
     recordname.cpp \
     smsreader.cpp \
-    GTDxml.cpp
+    GTDxml.cpp \
+    stlrecord.cpp \
+    namewithsortnumreturnrecord.cpp
 
 HEADERS += \
     globe.h \
     recordautosort.h \
     recordname.h \
     smsreader.h \
-    GTDxml.h
+    GTDxml.h \
+    stlrecord.h \
+    namewithsortnumreturnrecord.h
