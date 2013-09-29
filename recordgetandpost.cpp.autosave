@@ -1,0 +1,10 @@
+#include "recordgetandpost.h"
+
+RecordGetAndPost::RecordGetAndPost()
+{
+}
+
+void RecordGetAndPost::RecordSave(globeset globe)
+{
+    QFile _xml(globe.)
+}

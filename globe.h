@@ -22,6 +22,7 @@ public:
     QString iniPos;
     QString NameConnecrXmlPos;
     QString NameWithSortNumReturnRecordXmlPOS;
+    QString RecordGetAndPost;
 
     globeset()
     {
@@ -38,6 +39,7 @@ public:
         STLDate.fromString("1970-01-01","yyyy-MM-dd");
         NameConnecrXmlPos ="c:/NameConnecrXmlPos.xml";
         NameWithSortNumReturnRecordXmlPOS="c:/NameWithSortNumReturnRecordXmlPOS.xml";
+        RecordGetAndPost="c:/RecordGetAndPost.xml"
     }
     void read()
     {

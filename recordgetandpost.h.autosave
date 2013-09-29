@@ -1,0 +1,18 @@
+#ifndef RECORDGETANDPOST_H
+#define RECORDGETANDPOST_H
+#include "globe.h"
+#include <QFile>
+#include <QTextStream>
+#include <QString>
+#include <QtXml>
+
+class RecordGetAndPost
+{
+public:
+    RecordGetAndPost();//记录总类，负责读取，返回，储存记录
+    void RecordRead(globeset globe);
+    void RecordAdd(globeset globe);
+    void RecordSave(globeset globe);
+};
+
+#endif // RECORDGETANDPOST_H

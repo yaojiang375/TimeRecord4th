@@ -21,7 +21,8 @@ SOURCES += main.cpp \
     smsreader.cpp \
     GTDxml.cpp \
     stlrecord.cpp \
-    namewithsortnumreturnrecord.cpp
+    namewithsortnumreturnrecord.cpp \
+    recordgetandpost.cpp
 
 HEADERS += \
     globe.h \
@@ -30,4 +31,5 @@ HEADERS += \
     smsreader.h \
     GTDxml.h \
     stlrecord.h \
-    namewithsortnumreturnrecord.h
+    namewithsortnumreturnrecord.h \
+    recordgetandpost.h
