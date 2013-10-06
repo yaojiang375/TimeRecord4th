@@ -22,7 +22,8 @@ SOURCES += main.cpp \
     GTDxml.cpp \
     stlrecord.cpp \
     namewithsortnumreturnrecord.cpp \
-    recordgetandpost.cpp
+    recordgetandpost.cpp \
+    todolist.cpp
 
 HEADERS += \
     globe.h \
@@ -32,4 +33,5 @@ HEADERS += \
     GTDxml.h \
     stlrecord.h \
     namewithsortnumreturnrecord.h \
-    recordgetandpost.h
+    recordgetandpost.h \
+    todolist.h

@@ -60,7 +60,7 @@ bool RecordName::SaveRecordNameConnect(globeset globe)
 {
     QFile _read(globe.NameConnecrXmlPos);
     _read.open(QIODevice::WriteOnly);
-    QTextStream _READ(&_read);
+    QTextStream _READ(&_read);//￥￥是否应该先清空以下文件？
 
     doc.clear();
     QDomProcessingInstruction instruction;
