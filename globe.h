@@ -20,10 +20,13 @@ public:
     QString MidThing;
     QDate   STLDate;//标准时间，1970-01-01_00：00
     QTime   STLTime;//标准时间00：00
+
+
     QString iniPos;
     QString NameConnecrXmlPos;
     QString NameWithSortNumReturnRecordXmlPOS;
     QString RecordGetAndPost;
+    QString GetAndPostPos;
 
     globeset()
     {
@@ -42,6 +45,7 @@ public:
         NameConnecrXmlPos ="c:/NameConnecrXmlPos.xml";
         NameWithSortNumReturnRecordXmlPOS="c:/NameWithSortNumReturnRecordXmlPOS.xml";
         RecordGetAndPost="c:/RecordGetAndPost.xml";
+        GetAndPostPos   ="c:/GetAndPost.xml";
     }
     void read()
     {

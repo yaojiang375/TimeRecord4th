@@ -76,9 +76,38 @@ void RecordGetAndPost::RecordReadFromFile(globeset globe)
 
 void RecordGetAndPost::RecordAdd(globeset globe)
 {
-    QFile _xml("c:/RecXml.xml");
+    QFile _xml("c:/RecXml.xml");//后期重点
     _xml.open(QIODevice::ReadOnly);
     QDomDocument doc;
+
+    /********************************************************************/
+        //这一段代码负责将已完成记录写入c：/GetAndPost.xml文件中，以供其他程序使用
+        QFile   GetAndPost(globe.GetAndPostPos);
+        GetAndPost.open(QIODevice::ReadWrite);
+        QTextStream    jzyzy(&GetAndPost);
+
+        QDomDocument                    Other_Save;
+        QDomProcessingInstruction       Other_InsTruction;
+
+        QDomElement                     Other_root;
+        QDomElement                     Other_Record;
+        QDomElement                     Other_Date;
+        QDomElement                     Other_Time;
+        QDomElement                     Other_Minute;
+        QDomElement                     Other_Thing;
+        QDomElement                     Other_ThingRem;
+        QDomText                        Other_Text;
+
+        Other_InsTruction = Other_Save.createProcessingInstruction("xml","version=\"1.0\" encoding = \"UTF-8\"");
+        Other_Save.appendChild(Other_InsTruction);
+        Other_root        = Other_Save.createElement("Other_root");
+
+    /********************************************************************/
+
+
+
+
+
 
     QDomElement  xml_Record;
     doc.setContent(&_xml);
@@ -140,6 +169,45 @@ void RecordGetAndPost::RecordAdd(globeset globe)
                     first++;
                    }
                    first->Minute = 1440 -first->intTime + SortByDate[xmlFileRecordReader.intDate]->Record.begin()->intTime;
+                   /********************************************************************/
+                       //这一段代码负责将新添加的记录写入c:/GetAndPost.xml文件中，以供其他程序使用
+
+                   first        =   SortByDate[xmlFileRecordReader.intDate-1]->Record.begin();
+
+                   while(first!=SortByDate[xmlFileRecordReader.intDate-1]->Record.end())
+                   {
+                        Other_Record =   Other_Save.createElement("Other_Record");
+                        Other_Date   =   Other_Save.createElement("Other_Date");
+                        Other_Time   =   Other_Save.createElement("Other_Time");
+                        Other_Minute =   Other_Save.createElement("Other_Minute");
+                        Other_Thing  =   Other_Save.createElement("Other_Thing");
+                        Other_ThingRem=  Other_Save.createElement("Other_ThingRem");
+
+                        Other_Record.setAttribute("intDate",first->intDate);
+                        Other_Date.setAttribute("intDate",first->intDate);
+                        Other_Time.setAttribute("intTime",first->intTime);
+                        Other_Minute.setAttribute("Minute",first->Minute);
+
+                        Other_Text      =Other_Save.createTextNode(first->Date);
+                        Other_Date.appendChild(Other_Text);
+                        Other_Text      =Other_Save.createTextNode(first->Time);
+                        Other_Time.appendChild(Other_Text);
+                        Other_Text      =Other_Save.createTextNode(first->Thing);
+                        Other_Thing.appendChild(Other_Text);
+                        Other_Text      =Other_Save.createTextNode(first->ThingRem);
+                        Other_ThingRem.appendChild(Other_Text);
+
+                        Other_Record.appendChild(Other_Date);
+                        Other_Record.appendChild(Other_Time);
+                        Other_Record.appendChild(Other_Minute);
+                        Other_Record.appendChild(Other_Thing);
+                        Other_Record.appendChild(Other_ThingRem);
+
+                        Other_root.appendChild(Other_Record);
+                   }
+                   /********************************************************************/
+
+
                }
                else
                {}
@@ -181,6 +249,13 @@ void RecordGetAndPost::RecordAdd(globeset globe)
         xml_Record      =   xml_Record.nextSiblingElement("Record");
     }
 
+    /********************************************************************/
+        //这一段代码负责将新添加的记录写入c:/GetAndPost.xml文件中，以供其他程序使用
+
+    Other_Save.appendChild(Other_root);
+
+    Other_Save.save(jzyzy,4);
+    /********************************************************************/
     return;
 
 }

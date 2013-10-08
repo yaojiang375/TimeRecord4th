@@ -48,7 +48,7 @@ typedef struct apc//指向自身的指针
    {
        return this->intTime < b->intTime;
    }*/
-   bool operator < (const struct apc b)const
+   bool operator < (const struct apc b)const//不清楚为什么会成功
    {
        return this->intTime < b.intTime;
    }
@@ -164,6 +164,7 @@ public:
     void RecordReadFromFile(globeset globe);
     void RecordAdd(globeset globe);
     void RecordSave(globeset globe);
+    QList<QString>           ErrorList;
 private:
     _ReciveRecord   DayRecord;
     _RecordType     ReadBuf;//读取文件记录时的缓存，目前只在add函数中调用过，使用前需先调用clear方法
@@ -173,7 +174,7 @@ private:
     int             newRecord;//最新纪录所在日期（距离标准日期的天数）
     QDate           BufDate;
     QTime           BufTime;
-    QList<QString>           ErrorList;
+
 };
 
 #endif // RECORDGETANDPOST_H
