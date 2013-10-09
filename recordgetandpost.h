@@ -10,7 +10,7 @@
 #include <QtAlgorithms>
 
 #include <QtXml>
-#define RECORDLENGTH  10000
+#define RECORDLENGTH  100000
 
 typedef struct
 {
@@ -22,6 +22,17 @@ typedef struct
     QString NextRem;
     int     intDate;
     int     intTime;
+    void    Debugprintf(void)
+    {
+        qDebug()<<"Date="<<Date;
+        qDebug()<<"intDate="<<intDate;
+        qDebug()<<"Time="<<Time;
+        qDebug()<<"intTime="<<intTime;
+        qDebug()<<"LastThing="<<LastThing;
+        qDebug()<<"LastRem="<<LastRem;
+        qDebug()<<"NextThing="<<NextThing;
+        qDebug()<<"NextRem="<<NextRem;
+    }
 }_xmlRecordRead;
 
 
@@ -84,11 +95,7 @@ typedef struct apc//指向自身的指针
        return;
 
    }
-   friend bool operator ==(struct apc a,struct apc b);//为方便比较所设的友元函数
-
-}_RecordType;
-
-bool operator ==(struct apc a,struct apc b)
+   friend bool operator ==(struct apc a,struct apc b)//为方便比较所设的友元函数
 {
     if(b.Date     == a.Date&&
     b.Time     == a.Time&&
@@ -106,16 +113,21 @@ bool operator ==(struct apc a,struct apc b)
     }
 }
 
-typedef QVector<_RecordType> _ReciveRecord;
+}_RecordType;
 
+
+
+typedef QVector<_RecordType> _ReciveRecord;
 
 
 typedef struct GaE
 {
+public:
     bool            CompleteFlag;//是否记录完成，记录完成为TRUE，默认为FALSE
     bool            NeedToFigure;//记录是否需要计算，默认为TRUE；
     bool            SortedFlag;//是否已排序，默认为未排序FALSE
     _ReciveRecord   Record;
+
     GaE()
     {
         CompleteFlag =FALSE;
@@ -126,31 +138,56 @@ typedef struct GaE
     bool            append(_RecordType a);//添加成功返回TURE，添加失败返回FALSE
 
 
-
-
-
-    bool      SortByMembe(const _RecordType &a,const   _RecordType &b)const
+    int            Sort1(int begin,int end)
     {
+        //手工实现快排
+        _ReciveRecord::iterator    a = Record.begin()+begin;
+        _RecordType                buf=*a;
+        int i=begin+1;//初始位置
+        int k=0;//缓存变量
+        int z=end;//结束位置
+        while(i!=z)
+        {
+        while(buf.intTime >= (Record.begin()+i)->intTime)
+        {
+            *(a+k) = *(Record.begin()+i);
+            k=i-begin;
+            i++;
+        }
 
-             if(a.intTime < b.intTime)
-             {
-                 return    TRUE;
-             }
-             else
-             {
-                 return FALSE;
-             }
-
+        while(buf.intTime < (Record.begin()+z)->intTime)
+        {
+            z--;
+        }
+        *(a+k) = *(Record.begin()+z);
+        k=z-begin;
+        *(a+k) = *(Record.begin()+i);
+        k=i-begin;
+        i++;
+        }
+        *(a+k) = buf;
+        i--;
+        return i;
     }
-    bool            Sort(void)
+    int      qSort1(int begin,int end)
     {
-
-
-        qSort(Record.begin(),Record.end());
-        return TRUE;
-
+        if(begin == end)
+        {
+            return 0;
+        }
+        else
+        {
+            qSort1(Sort1(begin,end),end);
+            qSort1(begin,Sort1(begin,end)-1);
+            return 1;
+        }
     }
 
+    int             Sort(void)
+    {
+        qSort(Record);
+        return 0;
+    }
 
     bool            update(_RecordType a);
 

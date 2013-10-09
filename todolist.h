@@ -10,7 +10,7 @@
 #include <QTextStream>
 #include <QtXml>
 
-typedef struct apc
+typedef struct
 {
    QString Date;
    QString Time;
@@ -19,6 +19,17 @@ typedef struct apc
    int     Minute;
    QString Thing;
    QString ThingRem;
+
+   void    Debugprintf(void)
+   {
+       qDebug()<<"Date="<<Date;
+       qDebug()<<"intDate="<<intDate;
+       qDebug()<<"Time="<<Time;
+       qDebug()<<"intTime="<<intTime;
+       qDebug()<<"Thing="<<Thing;
+       qDebug()<<"ThingRem="<<ThingRem;
+       qDebug()<<"Minute="<<Minute;
+   }
 }  DoneList_Record;
 
 typedef struct enenen
@@ -69,6 +80,12 @@ public:
     int     AllThingCount();
     int     DoingCount();//进行中任务计数
     int     DoneCount();//已做完任务计数
+    void    KeyWordList(QString keyWords);
+    void    AddNeedTodo(QString    TaskName,QString BeginDate,QString EndDate );//添加任务
+   /*添加任务相关变量*/
+    QList<QString>      KeyWordListBuffer;
+    int     TaskId_Max;//已分配的任务ID最大值
+   /*添加任务相关变量*/
     QList<JustDo_it>            Done;
     QList<JustDo_it>            Doing;
     QMap<int,int>               MapForRecordID;

@@ -30,7 +30,7 @@ void ToDoList::ReadFromAddDBFile(globeset globe)
         Buf.ThingRem=   Record.firstChildElement("Other_ThingRem").text();
         Buf.intDate =   Record.firstChildElement("Other_Date").attribute("intDate").toInt();
         Buf.intTime =   Record.firstChildElement("Other_Time").attribute("intTime").toInt();
-
+        Buf.Debugprintf();
         if(MuiltMap.contains(Buf.Thing))
         {
             Return_value    =   MuiltMap.values(Buf.Thing);
@@ -86,6 +86,7 @@ void ToDoList::SaveToFile(globeset globe)
     xml_InsTruction     =   xml_Save.createProcessingInstruction("xml","version=\"1.0\" encoding = \"UTF-8\"");
     xml_Save.appendChild(xml_InsTruction);
     xml_root            =   xml_Save.createElement("root");
+    xml_root.setAttribute("TaskId_Max",TaskId_Max);
 
 
     xml_Done          =   xml_Save.createElement("Done");
@@ -255,4 +256,39 @@ void ToDoList::SaveToFile(globeset globe)
     xml_Save.appendChild(xml_root);
 
     xml_Save.save(_Task,4);
+}
+
+int ToDoList::AllThingCount()
+{
+    return Done.count()+Doing.count();
+}
+
+int ToDoList::DoingCount()
+{
+    return Doing.count();
+}
+
+int ToDoList::DoneCount()
+{
+    return Done.count();
+}
+
+void ToDoList::KeyWordList(QString keyWords)
+{
+    KeyWordListBuffer.append(keyWords);
+    return ;
+}
+
+void ToDoList::AddNeedTodo(QString TaskName, QString BeginDate, QString EndDate)
+{
+    JustDo_it   a;
+    a.TaskID    = TaskId_Max+1;
+    TaskId_Max++;
+    a.BeginDate =BeginDate;
+    a.EndDate   =EndDate;
+    a.KeyWord   =KeyWordListBuffer;
+    KeyWordListBuffer.clear();
+    a.MinuteContinue=0;
+    Doing.append(a);
+    return;
 }

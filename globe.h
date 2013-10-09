@@ -40,8 +40,8 @@ public:
         LeftRem     ="[";
         MidThing    ="？";
         iniPos      ="c:/1.ini";//Qdebug
-        STLDate.fromString("1970-01-01","yyyy-MM-dd");
-        STLTime.fromString("00:00","hh:mm");
+        STLDate.setDate(2010,01,01);
+        STLTime.setHMS(0,0,0);
         NameConnecrXmlPos ="c:/NameConnecrXmlPos.xml";
         NameWithSortNumReturnRecordXmlPOS="c:/NameWithSortNumReturnRecordXmlPOS.xml";
         RecordGetAndPost="c:/RecordGetAndPost.xml";

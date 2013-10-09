@@ -3,6 +3,10 @@
 
 RecordGetAndPost::RecordGetAndPost()
 {
+    _ReciveRecord   *atp1;
+    memset(SortByDate,NULL,sizeof(atp1)*RECORDLENGTH);
+    qDebug()<<NULL;
+    qDebug()<<SortByDate[1];
     ErrorList.clear();
 }
 
@@ -79,6 +83,8 @@ void RecordGetAndPost::RecordAdd(globeset globe)
     QFile _xml("c:/RecXml.xml");//后期重点
     _xml.open(QIODevice::ReadOnly);
     QDomDocument doc;
+    QDomElement  xml_Body;
+
 
     /********************************************************************/
         //这一段代码负责将已完成记录写入c：/GetAndPost.xml文件中，以供其他程序使用
@@ -111,27 +117,38 @@ void RecordGetAndPost::RecordAdd(globeset globe)
 
     QDomElement  xml_Record;
     doc.setContent(&_xml);
-    xml_Record  =doc.firstChildElement("Record");
+    xml_Record  =doc.firstChildElement("root");
+    xml_Record  =xml_Record.firstChildElement("Record");
+
     ReadBuf.clear();
     ErrorList.clear();
-    while(!xml_Record.isNull());
+    while(!xml_Record.isNull())
     {
         xmlFileRecordReader.Date = xml_Record.firstChildElement("Date").text();
         xmlFileRecordReader.Time = xml_Record.firstChildElement("Time").text();
-        xmlFileRecordReader.LastThing = xml_Record.firstChildElement("LastThing").text();
-        xmlFileRecordReader.LastRem = xml_Record.firstChildElement("LastthingRemember").text();
-        xmlFileRecordReader.NextThing = xml_Record.firstChildElement("NextThing").text();
-        xmlFileRecordReader.NextRem = xml_Record.firstChildElement("NextThingRemember").text();
+        xml_Body                 = xml_Record.firstChildElement("Body");
+        xmlFileRecordReader.LastThing = xml_Body.firstChildElement("LastThing").text();
+        xmlFileRecordReader.LastRem = xml_Body.firstChildElement("LastthingRemember").text();
+        xmlFileRecordReader.NextThing = xml_Body.firstChildElement("NextThing").text();
+        xmlFileRecordReader.NextRem = xml_Body.firstChildElement("NextThingRemember").text();
 
-        BufDate.fromString(xmlFileRecordReader.Date,"yyyy-mm-dd");
-        BufTime.fromString(xmlFileRecordReader.Time,"hh:mm");
+        BufDate=QDate::fromString(xmlFileRecordReader.Date,"yyyy-MM-dd");
+        BufTime=QTime::fromString(xmlFileRecordReader.Time,"hh:mm");
+
         xmlFileRecordReader.intDate =globe.STLDate.daysTo(BufDate);
         xmlFileRecordReader.intTime =globe.STLTime.msecsTo(BufTime)/60000;//只记录分钟数就够了
 
+        xmlFileRecordReader.Debugprintf();
+/*        qDebug()<<"globe.Date="<<globe.STLDate.toString("yyyy-MM-dd");
+        qDebug()<<"BufDate="<<BufDate.toString("yyyy-MM-dd");
+        qDebug()<<"Date"<<xmlFileRecordReader.Date;//debug
+        qDebug()<<"intDate"<<xmlFileRecordReader.intDate ;*/
         if(SortByDate[xmlFileRecordReader.intDate]==NULL)//没有记录
         {
-            if(SortByDate[xmlFileRecordReader.intDate-1]!=NULL)
+            if(SortByDate[xmlFileRecordReader.intDate-1]!=NULL)//当intDate值为0时怎么办？
             {
+                qDebug()<<"intDate"<<xmlFileRecordReader.intDate ;//Debug
+                qDebug()<<"SortByDate[xmlFileRecordReader.intDate-1]="<<SortByDate[xmlFileRecordReader.intDate-1];//Debug
                 {
                  if(xmlFileRecordReader.LastThing.isEmpty())
                  {}
@@ -147,6 +164,9 @@ void RecordGetAndPost::RecordAdd(globeset globe)
                  }
                 }//针对Last的检测,将Last写回
 
+                qDebug()<<"SortByDate[xmlFileRecordReader.intDate-1]->Record.first().Date"<<SortByDate[xmlFileRecordReader.intDate-1]->Record.first().Date;//Debug;
+
+
                 SortByDate[xmlFileRecordReader.intDate] = new EndRecordType;
                 ReadBuf               = xmlFileRecordReader;
                 SortByDate[xmlFileRecordReader.intDate]->append(ReadBuf);//此处可以优化，只写入数据一次，不修改FigureFlag
@@ -156,7 +176,8 @@ void RecordGetAndPost::RecordAdd(globeset globe)
                {}
                else
                {
-                   SortByDate[xmlFileRecordReader.intDate-1]->Sort();//排序
+                   SortByDate[xmlFileRecordReader.intDate-1]->Sort();
+                   //SortByDate[xmlFileRecordReader.intDate-1]->qSort(0,SortByDate[xmlFileRecordReader.intDate-1]->Record.count());//排序
                    SortByDate[xmlFileRecordReader.intDate-1]->SortedFlag = TRUE;//排序
                }
                if(SortByDate[xmlFileRecordReader.intDate-1]->NeedToFigure)
@@ -173,7 +194,7 @@ void RecordGetAndPost::RecordAdd(globeset globe)
                        //这一段代码负责将新添加的记录写入c:/GetAndPost.xml文件中，以供其他程序使用
 
                    first        =   SortByDate[xmlFileRecordReader.intDate-1]->Record.begin();
-
+int test=0;
                    while(first!=SortByDate[xmlFileRecordReader.intDate-1]->Record.end())
                    {
                         Other_Record =   Other_Save.createElement("Other_Record");
@@ -182,7 +203,8 @@ void RecordGetAndPost::RecordAdd(globeset globe)
                         Other_Minute =   Other_Save.createElement("Other_Minute");
                         Other_Thing  =   Other_Save.createElement("Other_Thing");
                         Other_ThingRem=  Other_Save.createElement("Other_ThingRem");
-
+test++;
+qDebug()<<test;
                         Other_Record.setAttribute("intDate",first->intDate);
                         Other_Date.setAttribute("intDate",first->intDate);
                         Other_Time.setAttribute("intTime",first->intTime);
@@ -204,6 +226,7 @@ void RecordGetAndPost::RecordAdd(globeset globe)
                         Other_Record.appendChild(Other_ThingRem);
 
                         Other_root.appendChild(Other_Record);
+                        first++;
                    }
                    /********************************************************************/
 
@@ -263,7 +286,7 @@ void RecordGetAndPost::RecordAdd(globeset globe)
 void RecordGetAndPost::RecordSave(globeset globe)
 {
     QFile _xml(globe.RecordGetAndPost);
-    _xml.open(QIODevice::ReadOnly);
+    _xml.open(QIODevice::ReadWrite);
     QTextStream _XMLreader(&_xml);
 
     QDomDocument doc;
