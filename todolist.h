@@ -45,6 +45,34 @@ typedef struct enenen
 
 
     //method
+    void       clear()
+    {
+        TaskID  =0;
+        TaskName.clear();
+        BeginDate.clear();
+        EndDate.clear();
+        MinuteContinue=0;
+        KeyWord.clear();
+        ToDoList.clear();
+        return;
+    }
+
+
+
+    int  intBeginDate(void)
+    {
+        QDate   a,b;
+        a=QDate::fromString("2010-01-01","yyyy-MM-dd");
+        b=QDate::fromString(BeginDate,"yyyy-MM-dd");
+        return  a.daysTo(b);
+    }
+    int  intEndDate(void)
+    {
+        QDate   a,b;
+        a=QDate::fromString("2010-01-01","yyyy-MM-dd");
+        b=QDate::fromString(EndDate,"yyyy-MM-dd");
+        return  a.daysTo(b);
+    }
     void appendRecord(DoneList_Record a)
     {
         ToDoList.append(a);
@@ -81,15 +109,14 @@ public:
     int     DoingCount();//进行中任务计数
     int     DoneCount();//已做完任务计数
     void    KeyWordList(QString keyWords);
-    void    AddNeedTodo(QString    TaskName,QString BeginDate,QString EndDate );//添加任务
+    void    AddTaskIntoList(QString    TaskName,QString BeginDate,QString EndDate );//添加任务
    /*添加任务相关变量*/
     QList<QString>      KeyWordListBuffer;
     int     TaskId_Max;//已分配的任务ID最大值
    /*添加任务相关变量*/
-    QList<JustDo_it>            Done;
-    QList<JustDo_it>            Doing;
-    QMap<int,int>               MapForRecordID;
-    QMultiMap<QString,int>      MuiltMap;
+    QList<JustDo_it>            TaskList;//所有任务均读取至TaskList中，添加的新任务从总任务库中检索
+    QMap<int,int>               MapForRecordID;//key为TaskID
+    QMultiMap<QString,int>      MuiltMap;//关键字与KeyID
 private:
     QList<int>                  Return_value;
 };
