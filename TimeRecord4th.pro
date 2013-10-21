@@ -23,7 +23,8 @@ SOURCES += main.cpp \
     stlrecord.cpp \
     namewithsortnumreturnrecord.cpp \
     recordgetandpost.cpp \
-    todolist.cpp
+    todolist.cpp \
+    content_check.cpp
 
 HEADERS += \
     globe.h \
@@ -34,4 +35,5 @@ HEADERS += \
     stlrecord.h \
     namewithsortnumreturnrecord.h \
     recordgetandpost.h \
-    todolist.h
+    todolist.h \
+    content_check.h

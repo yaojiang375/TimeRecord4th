@@ -145,7 +145,7 @@ void ToDoList::ReadFromAddDBFile(globeset globe)
             Return_value    =   MuiltMap.values(Buf.Thing);//需要修改
             for(int i = 0;i < Return_value.size();i++)
             {
-                if(Buf.intDate()<(TaskList.begin()+MapForRecordID.value(Return_value.at(i)))->intEndDate())
+                if(Buf.intDate<(TaskList.begin()+MapForRecordID.value(Return_value.at(i)))->intEndDate())
                 {
                     (TaskList.begin()+MapForRecordID.value(Return_value.at(i)))->appendRecord(Buf);//Qlist的at（）以及value方法返回的之阵位常量指针，无法改变其内容，所以要用begin（）来代替
                     (TaskList.begin()+MapForRecordID.value(Return_value.at(i)))->AddMinute(Buf.Minute);
@@ -200,9 +200,9 @@ void ToDoList::SaveToFile(globeset globe)
 
 
     xml_Done          =   xml_Save.createElement("Done");
-    QList<JustDo_it>::const_iterator     it_Done=TaskList.begin();
-    QList<QString>::const_iterator       it_Done_KeyWord    = it_Done->KeyWord.begin();
-    QList<DoneList_Record>::const_iterator       it_Done_ToDoList   = it_Done->ToDoList.begin();
+    QList<JustDo_it>::const_iterator             it_Done=TaskList.begin();
+
+
 
     while(it_Done!=TaskList.end())
     {
@@ -227,6 +227,7 @@ void ToDoList::SaveToFile(globeset globe)
     xml_MinuteContinue.setAttribute("MinuteContinue",it_Done->MinuteContinue);
 
     xml_KeyWordList   =   xml_Save.createElement("KeyWorldList");
+    QList<QString>::const_iterator               it_Done_KeyWord    = it_Done->KeyWord.begin();//&&此处有错，回来检测
     while(it_Done_KeyWord!=it_Done->KeyWord.end())
     {
         xml_KeyWords  =   xml_Save.createElement("KeyWords");
@@ -237,6 +238,7 @@ void ToDoList::SaveToFile(globeset globe)
     }
 
     xml_ToDoList      =   xml_Save.createElement("ToDoList");
+    QList<DoneList_Record>::const_iterator       it_Done_ToDoList   = it_Done->ToDoList.begin();//&&此处有错，回来检测
     while(it_Done_ToDoList!=it_Done->ToDoList.end())
     {
         xml_Record    =   xml_Save.createElement("Record");
@@ -312,6 +314,6 @@ void ToDoList::AddTaskIntoList(QString TaskName, QString BeginDate, QString EndD
     a.KeyWord   =KeyWordListBuffer;
     KeyWordListBuffer.clear();
     a.MinuteContinue=0;
-    Doing.append(a);
+    TaskList.append(a);
     return;
 }

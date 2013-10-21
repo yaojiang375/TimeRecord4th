@@ -6,7 +6,7 @@
 #include "namewithsortnumreturnrecord.h"
 #include "recordgetandpost.h"
 #include "todolist.h"
-
+#include "content_check.h"
 globeset globe;//待修改成标准模式
 
 
@@ -15,8 +15,13 @@ globeset globe;//待修改成标准模式
 int main(void)
 {
     globe.read();
-    ToDoList    b;
-    b.ReadFromAddDBFile(globe);
-    b.SaveToFile(globe);
+    Content_Check a;
+    QString       b;
+    QFile         c("c:/123.txt");
+    c.open(QIODevice::ReadOnly);
+    QTextStream   d(&c);
+    b = d.readLine();
+    qDebug()<<"b="<<b;
+    qDebug()<<a.check(globe,b);
     return 0;
 }
